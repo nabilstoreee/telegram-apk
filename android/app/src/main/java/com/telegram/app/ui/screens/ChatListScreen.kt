@@ -6,13 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,10 +20,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.telegram.app.data.model.Chat
-import com.telegram.app.data.model.ChatFolder
 import com.telegram.app.ui.theme.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatListScreen(
     chats: List<Chat>,
@@ -34,114 +29,89 @@ fun ChatListScreen(
     onOpenDrawer: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var selectedFolder by remember { mutableStateOf(ChatFolder.ALL) }
     var searchQuery by remember { mutableStateOf("") }
-    var isSearching by remember { mutableStateOf(false) }
 
-    val filteredChats = remember(chats, selectedFolder, searchQuery) {
-        chats.filter { chat ->
-            val matchesFolder = when (selectedFolder) {
-                ChatFolder.ALL -> true
-                else -> chat.folder == selectedFolder
-            }
-            val matchesQuery = if (searchQuery.isBlank()) true else {
+    val filteredChats = remember(chats, searchQuery) {
+        if (searchQuery.isBlank()) chats
+        else {
+            chats.filter { chat ->
                 chat.name.contains(searchQuery, ignoreCase = true) ||
                         chat.lastMessage.contains(searchQuery, ignoreCase = true)
             }
-            matchesFolder && matchesQuery
         }
     }
 
     Scaffold(
+        containerColor = Color(0xFF0E1621),
         topBar = {
-            Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
-                if (isSearching) {
-                    TopAppBar(
-                        title = {
-                            TextField(
-                                value = searchQuery,
-                                onValueChange = { searchQuery = it },
-                                placeholder = { Text("Cari...", color = TelegramTextSecondary) },
-                                singleLine = true,
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = Color.Transparent,
-                                    unfocusedContainerColor = Color.Transparent,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedTextColor = TelegramTextPrimary,
-                                    unfocusedTextColor = TelegramTextPrimary
-                                )
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                isSearching = false
-                                searchQuery = ""
-                            }) {
-                                Text("Batal", color = TelegramLightBlue, fontSize = 14.sp)
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
-                    )
-                } else {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = "Telegram",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                color = TelegramTextPrimary
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = onOpenDrawer) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = "Menu",
-                                    tint = TelegramTextPrimary
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(onClick = { isSearching = true }) {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = "Cari",
-                                    tint = TelegramTextPrimary
-                                )
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
-                    )
-                }
-
-                // Telegram Folder Tabs
-                ScrollableTabRow(
-                    selectedTabIndex = selectedFolder.ordinal,
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = TelegramLightBlue,
-                    edgePadding = 12.dp,
-                    indicator = { tabPositions ->
-                        TabRowDefaults.SecondaryIndicator(
-                            modifier = Modifier.tabIndicatorOffset(tabPositions[selectedFolder.ordinal]),
-                            color = TelegramLightBlue,
-                            height = 3.dp
-                        )
-                    },
-                    divider = { HorizontalDivider(color = TelegramDarkDivider, thickness = 1.dp) }
+            // Telegram Search Bar matching Photo 3
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF17212B))
+                    .statusBarsPadding()
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(44.dp)
+                        .clip(RoundedCornerShape(22.dp))
+                        .background(Color(0xFF242F3D))
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ChatFolder.values().forEach { folder ->
-                        Tab(
-                            selected = selectedFolder == folder,
-                            onClick = { selectedFolder = folder },
-                            text = {
-                                Text(
-                                    text = folder.title,
-                                    fontWeight = if (selectedFolder == folder) FontWeight.Bold else FontWeight.Medium,
-                                    fontSize = 14.sp,
-                                    color = if (selectedFolder == folder) TelegramLightBlue else TelegramTextSecondary
-                                )
-                            }
+                    IconButton(
+                        onClick = onOpenDrawer,
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu",
+                            tint = TelegramTextSecondary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 6.dp)
+                    ) {
+                        if (searchQuery.isEmpty()) {
+                            Text(
+                                text = "Cari obrolan, pesan, atau @username...",
+                                color = TelegramTextSecondary,
+                                fontSize = 14.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            singleLine = true,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { },
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Cari",
+                            tint = TelegramTextSecondary,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -152,29 +122,97 @@ fun ChatListScreen(
                 onClick = { /* New Chat */ },
                 containerColor = TelegramBlue,
                 contentColor = Color.White,
-                shape = CircleShape
+                shape = CircleShape,
+                modifier = Modifier.padding(bottom = 8.dp, end = 8.dp)
             ) {
-                Icon(Icons.Default.Edit, contentDescription = "Tulis Pesan Baru")
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Tulis Pesan",
+                    tint = Color.White,
+                    modifier = Modifier.size(22.dp)
+                )
             }
         }
     ) { innerPadding ->
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(Color(0xFF0E1621))
                 .padding(innerPadding)
         ) {
-            items(filteredChats, key = { it.id }) { chat ->
+            // Arsip Obrolan (Pesan Tersimpan) Row matching Photo 3
+            item(key = "archive_header") {
+                ArchiveItemRow(
+                    onClick = {
+                        val savedChat = chats.find { it.isSavedMessages } ?: chats.firstOrNull()
+                        savedChat?.let { onChatClick(it) }
+                    }
+                )
+                HorizontalDivider(
+                    color = Color(0xFF10161D),
+                    thickness = 0.5.dp,
+                    modifier = Modifier.padding(start = 76.dp)
+                )
+            }
+
+            // Normal Chats (manda, Nabil Assihidiqi, etc.)
+            items(
+                items = filteredChats.filter { !it.isSavedMessages },
+                key = { it.id }
+            ) { chat ->
                 ChatItemRow(
                     chat = chat,
                     onClick = { onChatClick(chat) }
                 )
                 HorizontalDivider(
-                    color = TelegramDarkDivider,
+                    color = Color(0xFF10161D),
                     thickness = 0.5.dp,
                     modifier = Modifier.padding(start = 76.dp)
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun ArchiveItemRow(onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(52.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(Color(0xFF242F3D)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = "Arsip",
+                tint = TelegramTextSecondary,
+                modifier = Modifier.size(26.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.width(14.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Arsip Obrolan",
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "Pesan Tersimpan",
+                color = TelegramTextSecondary,
+                fontSize = 14.sp
+            )
         }
     }
 }
@@ -191,23 +229,26 @@ fun ChatItemRow(
             .padding(horizontal = 14.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Avatar with initials and optional online indicator
+        // Avatar circle with online indicator dot
         Box(
-            modifier = Modifier.size(54.dp),
+            modifier = Modifier.size(52.dp),
             contentAlignment = Alignment.Center
         ) {
+            val bg = try {
+                Color(android.graphics.Color.parseColor(chat.color.ifBlank { "#5288C1" }))
+            } catch (e: Exception) {
+                TelegramBlue
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(CircleShape)
-                    .background(
-                        if (chat.isSavedMessages) TelegramBlue
-                        else Color(android.graphics.Color.parseColor(chat.color.ifBlank { "#5288C1" }))
-                    ),
+                    .background(bg),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (chat.isSavedMessages) "★" else chat.name.take(1).uppercase(),
+                    text = chat.name.take(1).uppercase(),
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
@@ -216,35 +257,41 @@ fun ChatItemRow(
             if (chat.isOnline) {
                 Box(
                     modifier = Modifier
-                        .size(14.dp)
+                        .size(13.dp)
                         .align(Alignment.BottomEnd)
                         .clip(CircleShape)
-                        .background(TelegramGreen)
+                        .background(Color(0xFF4FAE4E))
                 )
             }
         }
 
         Spacer(modifier = Modifier.width(14.dp))
 
-        // Chat Info (Name, Last message)
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
+        Column(modifier = Modifier.weight(1f)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = chat.name,
-                    color = TelegramTextPrimary,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f, fill = false)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = chat.name,
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if (chat.isMuted) {
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Muted",
+                            tint = TelegramTextSecondary,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
+                }
                 Text(
                     text = chat.lastMessageTime,
                     color = TelegramTextSecondary,
@@ -252,7 +299,7 @@ fun ChatItemRow(
                 )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(3.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -260,40 +307,30 @@ fun ChatItemRow(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = chat.lastMessage.ifBlank { "Belum ada pesan" },
+                    text = chat.lastMessage,
                     color = TelegramTextSecondary,
                     fontSize = 14.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f, fill = false)
+                    modifier = Modifier.weight(1f)
                 )
 
+                // Double check status mark in light blue
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (chat.isPinned) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Dipasang",
-                            tint = TelegramTextSecondary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                    }
-                    if (chat.unreadCount > 0) {
-                        Box(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .background(TelegramBlue)
-                                .padding(horizontal = 8.dp, vertical = 2.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = chat.unreadCount.toString(),
-                                color = Color.White,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Terkirim",
+                        tint = TelegramLightBlue,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Dibaca",
+                        tint = TelegramLightBlue,
+                        modifier = Modifier
+                            .size(14.dp)
+                            .offset(x = (-6).dp)
+                    )
                 }
             }
         }

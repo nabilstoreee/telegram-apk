@@ -47,6 +47,8 @@ data class Chat(
     val unreadCount: Int = 0,
     val isPinned: Boolean = false,
     val isOnline: Boolean = false,
+    val isMuted: Boolean = false,
+    val isVerified: Boolean = false,
     val isSavedMessages: Boolean = false,
     val messages: List<Message> = emptyList()
 )
