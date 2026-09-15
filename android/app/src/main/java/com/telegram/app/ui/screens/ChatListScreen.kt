@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -127,7 +128,7 @@ fun ChatListScreen(
                             height = 3.dp
                         )
                     },
-                    divider = { Divider(color = TelegramDarkDivider, thickness = 1.dp) }
+                    divider = { HorizontalDivider(color = TelegramDarkDivider, thickness = 1.dp) }
                 ) {
                     ChatFolder.values().forEach { folder ->
                         Tab(
@@ -168,7 +169,7 @@ fun ChatListScreen(
                     chat = chat,
                     onClick = { onChatClick(chat) }
                 )
-                Divider(
+                HorizontalDivider(
                     color = TelegramDarkDivider,
                     thickness = 0.5.dp,
                     modifier = Modifier.padding(start = 76.dp)

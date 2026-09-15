@@ -101,7 +101,7 @@ fun TelegramDrawerContent(
             onClick = { onCloseDrawer() }
         )
 
-        Divider(color = TelegramDarkDivider, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
+        HorizontalDivider(color = TelegramDarkDivider, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
 
         // Night Mode Toggle
         Row(

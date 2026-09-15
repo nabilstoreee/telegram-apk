@@ -181,7 +181,7 @@ fun AuthScreen(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-            Divider(color = TelegramDarkDivider)
+            HorizontalDivider(color = TelegramDarkDivider)
             Spacer(modifier = Modifier.height(16.dp))
 
             // 1-Click Fast Access Buttons
