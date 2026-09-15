@@ -1,14 +1,15 @@
 package com.telegram.app
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
+import android.content.pm.ApplicationInfo
+import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.View
+import android.util.Log
 import android.view.ViewGroup
 import android.webkit.*
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.webkit.WebViewAssetLoader
 
 class MainActivity : ComponentActivity() {
 
@@ -17,6 +18,19 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Enable Chrome remote debugging in debug builds
+        if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
+
+        // Configure WebViewAssetLoader to serve local assets from https://appassets.androidplatform.net
+        // This is the official modern Android standard for SPAs (React, Vue, etc.)
+        val assetLoader = WebViewAssetLoader.Builder()
+            .setDomain("appassets.androidplatform.net")
+            .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
+            .addPathHandler("/res/", WebViewAssetLoader.ResourcesPathHandler(this))
+            .build()
 
         webView = WebView(this).apply {
             layoutParams = ViewGroup.LayoutParams(
@@ -42,21 +56,41 @@ class MainActivity : ComponentActivity() {
                 override fun onPermissionRequest(request: PermissionRequest?) {
                     request?.grant(request.resources)
                 }
+
+                override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                    Log.d("TelegramWeb", "${consoleMessage?.message()} -- From line ${consoleMessage?.lineNumber()} of ${consoleMessage?.sourceId()}")
+                    return super.onConsoleMessage(consoleMessage)
+                }
             }
 
             webViewClient = object : WebViewClient() {
+                override fun shouldInterceptRequest(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): WebResourceResponse? {
+                    val url = request?.url ?: return null
+                    // Intercept and serve via Android Asset Loader
+                    if (url.host == "appassets.androidplatform.net") {
+                        val intercepted = assetLoader.shouldInterceptRequest(url)
+                        if (intercepted != null) {
+                            return intercepted
+                        }
+                    }
+                    return super.shouldInterceptRequest(view, request)
+                }
+
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                     val url = request?.url?.toString() ?: ""
-                    // Keep internal app navigation within the WebView
-                    if (url.startsWith("file:///android_asset/") || url.startsWith("http://localhost") || url.startsWith("https://")) {
+                    // Keep app internal routing inside WebView
+                    if (url.contains("appassets.androidplatform.net") || url.startsWith("file:///android_asset/")) {
                         return false
                     }
                     return false
                 }
             }
 
-            // Load the bundled React production build
-            loadUrl("file:///android_asset/index.html")
+            // Load React SPA under https origin via asset loader
+            loadUrl("https://appassets.androidplatform.net/assets/index.html")
         }
 
         setContentView(webView)
