@@ -8,15 +8,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.DoneAll
-import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -143,7 +141,7 @@ fun ChatDetailScreen(
                 ) {
                     IconButton(onClick = { /* Open Emoji */ }) {
                         Icon(
-                            imageVector = Icons.Default.SentimentSatisfiedAlt,
+                            imageVector = Icons.Default.Favorite,
                             contentDescription = "Emoji",
                             tint = TelegramTextSecondary
                         )
@@ -170,7 +168,7 @@ fun ChatDetailScreen(
 
                     IconButton(onClick = { /* Attach */ }) {
                         Icon(
-                            imageVector = Icons.Default.AttachFile,
+                            imageVector = Icons.Default.Add,
                             contentDescription = "Lampiran",
                             tint = TelegramTextSecondary
                         )
@@ -182,19 +180,11 @@ fun ChatDetailScreen(
                             if (inputMessage.isNotBlank()) sendMessage()
                         }
                     ) {
-                        if (inputMessage.isNotBlank()) {
-                            Icon(
-                                imageVector = Icons.Default.Send,
-                                contentDescription = "Kirim",
-                                tint = TelegramLightBlue
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.Mic,
-                                contentDescription = "Pesan Suara",
-                                tint = TelegramTextSecondary
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Default.Send,
+                            contentDescription = "Kirim",
+                            tint = if (inputMessage.isNotBlank()) TelegramLightBlue else TelegramTextSecondary
+                        )
                     }
                 }
             }
@@ -257,7 +247,7 @@ fun MessageBubble(message: Message) {
                     if (isOut) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Icon(
-                            imageVector = if (message.isRead) Icons.Default.DoneAll else Icons.Default.Check,
+                            imageVector = Icons.Default.Check,
                             contentDescription = "Status",
                             tint = TelegramLightBlue,
                             modifier = Modifier.size(14.dp)

@@ -9,8 +9,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
@@ -271,7 +271,7 @@ fun ChatItemRow(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (chat.isPinned) {
                         Icon(
-                            imageVector = Icons.Default.PushPin,
+                            imageVector = Icons.Default.Star,
                             contentDescription = "Dipasang",
                             tint = TelegramTextSecondary,
                             modifier = Modifier.size(16.dp)

@@ -5,7 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -73,7 +77,7 @@ fun TelegramDrawerContent(
 
         // Drawer Menu Items
         DrawerItem(
-            icon = Icons.Outlined.BookmarkBorder,
+            icon = Icons.Default.Star,
             label = "Pesan Tersimpan",
             onClick = {
                 onCloseDrawer()
@@ -81,22 +85,22 @@ fun TelegramDrawerContent(
             }
         )
         DrawerItem(
-            icon = Icons.Outlined.Group,
+            icon = Icons.Default.AccountBox,
             label = "Grup Baru",
             onClick = { onCloseDrawer() }
         )
         DrawerItem(
-            icon = Icons.Outlined.PersonOutline,
+            icon = Icons.Default.Person,
             label = "Kontak",
             onClick = { onCloseDrawer() }
         )
         DrawerItem(
-            icon = Icons.Outlined.Call,
+            icon = Icons.Default.Call,
             label = "Panggilan",
             onClick = { onCloseDrawer() }
         )
         DrawerItem(
-            icon = Icons.Outlined.Settings,
+            icon = Icons.Default.Settings,
             label = "Pengaturan",
             onClick = { onCloseDrawer() }
         )
@@ -114,7 +118,7 @@ fun TelegramDrawerContent(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Outlined.DarkMode,
+                    imageVector = Icons.Default.Star,
                     contentDescription = "Mode Malam",
                     tint = TelegramTextSecondary
                 )
