@@ -1,0 +1,6 @@
+{
+  "name": "Telegram Web",
+  "description": "Aplikasi pesan instan Telegram dengan autentikasi, chat antar pengguna real-time, panggilan suara WebRTC real-time, side drawer, tab obrolan, dan antarmuka dark mode 100% presisi.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

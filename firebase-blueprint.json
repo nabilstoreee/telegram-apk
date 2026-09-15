@@ -1,0 +1,105 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with status and settings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "username": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "avatar": { "type": "string" },
+        "color": { "type": "string" },
+        "bio": { "type": "string" }
+      },
+      "required": ["id", "username", "name"]
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "Chat conversations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "name": { "type": "string" },
+        "participants": { "type": "array" }
+      },
+      "required": ["id", "type", "name", "participants"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Direct, group, and channel messages",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "chatId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "chatId", "senderId", "senderName"]
+    },
+    "CallLog": {
+      "title": "CallLog",
+      "description": "Audio and video call records",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "callerId": { "type": "string" },
+        "calleeId": { "type": "string" },
+        "type": { "type": "string" },
+        "status": { "type": "string" },
+        "duration": { "type": "number" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "callerId", "calleeId", "type", "status"]
+    },
+    "Story": {
+      "title": "Story",
+      "description": "Real 24-hour status story with photo, colorful text, or voice audio",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userAvatar": { "type": "string" },
+        "userColor": { "type": "string" },
+        "type": { "type": "string", "enum": ["photo", "text", "voice"] },
+        "text": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "audioDuration": { "type": "number" },
+        "backgroundGradient": { "type": "string" },
+        "fontFamily": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "expiresAt": { "type": "number" },
+        "viewers": { "type": "array" },
+        "reactions": { "type": "array" }
+      },
+      "required": ["id", "userId", "userName", "type", "createdAt", "expiresAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Registered user accounts"
+    },
+    "/chats/{chatId}": {
+      "schema": "Chat",
+      "description": "User chats and channels"
+    },
+    "/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Conversation messages"
+    },
+    "/callLogs/{callLogId}": {
+      "schema": "CallLog",
+      "description": "User call history"
+    },
+    "/stories/{storyId}": {
+      "schema": "Story",
+      "description": "Real status updates created by users"
+    }
+  }
+}

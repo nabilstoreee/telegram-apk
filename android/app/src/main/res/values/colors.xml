@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="telegram_blue">#5288C1</color>
+    <color name="telegram_dark_bg">#17212B</color>
+    <color name="telegram_dark_surface">#242F3D</color>
+    <color name="telegram_dark_input">#182533</color>
+    <color name="telegram_text_primary">#FFFFFF</color>
+    <color name="telegram_text_secondary">#7F91A4</color>
+    <color name="telegram_out_bubble">#2B5278</color>
+    <color name="telegram_in_bubble">#182533</color>
+</resources>

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Telegram</string>
+    <string name="tab_all">Semua</string>
+    <string name="tab_personal">Pribadi</string>
+    <string name="tab_groups">Grup</string>
+    <string name="tab_channels">Saluran</string>
+    <string name="search_hint">Cari pesan atau pengguna...</string>
+    <string name="type_message_hint">Pesan...</string>
+    <string name="online">online</string>
+    <string name="saved_messages">Pesan Tersimpan</string>
+    <string name="contacts">Kontak</string>
+    <string name="calls">Panggilan</string>
+    <string name="settings">Pengaturan</string>
+    <string name="night_mode">Mode Malam</string>
+    <string name="login_btn">Masuk</string>
+    <string name="register_btn">Daftar Akun Baru</string>
+</resources>
